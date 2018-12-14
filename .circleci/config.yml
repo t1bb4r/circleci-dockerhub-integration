@@ -5,45 +5,29 @@ jobs:
     # The secondary container is an instance of the second listed image which is run in a common network where ports exposed on the primary container are available on localhost.
       - image: mongo:4
     steps:
+      - setup_remote_docker
       - checkout
       - run:
-          name: Update npm
-          command: 'sudo npm install -g npm@latest'
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
+          name: Build docker image
+          command: docker build . -t circleci-dockerhub-integration
       - run:
-          name: Install npm wee
-          command: npm install
-      - save_cache:
-          key: dependency-cache-{{ checksum "package.json" }}
-          paths:
-            - node_modules
-      - run:
-          name: Test
-          command: npm test
-      - run:
-          name: Generate code coverage
-          command: './node_modules/.bin/nyc report --reporter=text-lcov'
-      - store_artifacts:
-          path: test-results.xml
-          prefix: tests
-      - store_artifacts:
-          path: coverage
-          prefix: coverage
-  test-image:
+          name: Test image
+          command: docker run --rm -it circleci-dockerhub-integration npm test
+  docker-deploy:
     docker:
-      - image: debian:stretch
+      - image: circleci/node:10-stretch
     steps:
-      - setup_remote_docker
       - run:
-          docker pull t1bb4r/circleci-dockerhub-integration:latest-untested
-      - run:
-          docker run --rm -it -t t1bb4r/circleci-dockerhub-integration:latest-untested npm test
-      - run:
-          docker tag t1bb4r/circleci-dockerhub-integration:latest-untested t1bb4r/circleci-dockerhub-integration:latest
-          docker push t1bb4r/circleci-dockerhub-integration:latest
+          name: Trigger Dockerhub autobuild
+          command: curl -X POST https://cloud.docker.com/api/build/v1/source/58ca4694-40b9-4658-b848-f5c93602453c/trigger/833b20e9-ed13-461f-ac9b-fb53d87110c2/call/
 workflows:
   version: 2
   build_and_test:
     jobs:
       - test
+      - docker-deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: master
