@@ -32,7 +32,7 @@ jobs:
           prefix: coverage
   test-image:
     docker:
-      - image: debian/stretch
+      - image: debian:stretch
     steps:
       - setup_remote_docker
       - run:
