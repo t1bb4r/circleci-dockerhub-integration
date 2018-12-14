@@ -1,0 +1,22 @@
+{
+  "name": "circleci-dockerhub-integration",
+  "version": "1.0.0",
+  "description": "circleci-dockerhub-integration",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/t1bb4r/circleci-dockerhub-integration.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/t1bb4r/circleci-dockerhub-integration/issues"
+  },
+  "homepage": "https://github.com/t1bb4r/circleci-dockerhub-integration#readme",
+  "dependencies": {
+    "nyc": "^13.1.0"
+  }
+}
