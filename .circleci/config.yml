@@ -8,26 +8,10 @@ jobs:
       - setup_remote_docker
       - checkout
       - run:
-          name: Build docker image
-          command: docker build . -t circleci-dockerhub-integration
-      - run:
-          name: Test image
-          command: docker run --rm -it circleci-dockerhub-integration npm test
-  docker-deploy:
-    docker:
-      - image: circleci/node:10-stretch
-    steps:
-      - run:
-          name: Trigger Dockerhub autobuild
-          command: curl -X POST https://cloud.docker.com/api/build/v1/source/58ca4694-40b9-4658-b848-f5c93602453c/trigger/833b20e9-ed13-461f-ac9b-fb53d87110c2/call/
+          name: Build and test
+          command: docker-compose -f docker-compose.test.yml up --build --exit-code-from sut
 workflows:
   version: 2
   build_and_test:
     jobs:
       - test
-      - docker-deploy:
-          requires:
-            - test
-          filters:
-            branches:
-              only: master
