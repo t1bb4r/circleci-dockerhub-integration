@@ -4,7 +4,7 @@
   "description": "circleci-dockerhub-integration",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "test": "ssh -vT git@github.com && exit 0"
   },
   "repository": {
     "type": "git",

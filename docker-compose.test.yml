@@ -1,3 +1,12 @@
-sut:
-  build: .
-  command: npm test
+version: "3.1"
+services:
+  sut:
+    build: .
+    command: npm test
+    secrets:
+      - source: rsa
+        target: id_rsa
+        mode: 0400
+secrets:
+  rsa:
+    file: ~/.ssh/id_rsa
